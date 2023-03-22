@@ -1,7 +1,10 @@
+from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QPushButton, QGridLayout, QTableWidget, QTableWidgetItem, QHBoxLayout
-from PySide6.QtGui import QFont
+from PySide6.QtGui import QFont, QColor
 import requests
 import os
+
+from functools import partial
 
 class HomeWindow(QWidget):
 
@@ -74,10 +77,8 @@ class HomeWindow(QWidget):
 		table.setHorizontalHeaderLabels(l)
 
 		# Popolo la tabella con le richieste di ferie
-		i = 0
-		for row in data:
-			j=0
-			for value in row.values():
+		for i, row in enumerate(data):
+			for j, value in enumerate(row.values()):
 				item = QTableWidgetItem(value)
 				table.setItem(i, j, item)
 				table.setColumnWidth(j, 300)
@@ -91,8 +92,8 @@ class HomeWindow(QWidget):
 					reject_button.setFixedSize(100, 50)
 					reject_button.setStyleSheet("background-color: red")
 					# Imposto la funzione da invocare al click
-					accept_button.clicked.connect(lambda: self.replyUserRequest(row, 1))
-					reject_button.clicked.connect(lambda: self.replyUserRequest(row, 2))
+					accept_button.clicked.connect(partial(self.updateRequest, row, 1, table, i))
+					reject_button.clicked.connect(partial(self.updateRequest, row, 2, table, i))
 					# Creo un contenitore e aggiungo i bottoni al layout a griglia
 					widget = QWidget()
 					layout = QHBoxLayout()
@@ -124,21 +125,30 @@ class HomeWindow(QWidget):
 			print("Impossibile connettersi al server.")
 
 	# Funzione per la risposta alla richiesta di ferie
-	def replyUserRequest(self, row, choice):
-		url = os.environ.get('URL_REPLY_USER_REQUEST')
-		row['choice'] = choice
-
-		print(row)
+	def updateRequest(self, row, type, table, index):
+		url = os.environ.get('URL_UPDATE_REQUEST')
+		obj = {'email': row['email'], 'year': row['year'], 'month': row['month'], 'day': row['day'], 'type': type, 'token': 'abcdef'} # todo token
 
 		try:
-			response = requests.post(url=url, json=row)
+			text = "Errore"
+			color = QColor("red")
+			response = requests.post(url=url, json=obj)
 
 			if response.status_code == 200:
-				# to define
-				return
-			else:
-				# to define
-				return
+				if type == 1:
+					text = "Accettata"
+					color = QColor("green")
+				elif type == 2:
+					text = "Rifiutata"
+
 		except requests.exceptions.RequestException:
 			# Gestione dell'eccezione
 			print("Impossibile connettersi al server.")
+
+		finally:
+			columns = table.columnCount()
+			table.setCellWidget(index, columns-1, QWidget())
+			item = QTableWidgetItem(text)
+			item.setForeground(color)
+			item.setTextAlignment(Qt.AlignCenter)
+			table.setItem(index, columns-1, item)
