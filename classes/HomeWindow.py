@@ -72,17 +72,21 @@ class HomeWindow(QWidget):
 
 		# Creo la tabella
 		table = QTableWidget(len(data), len(data[0])+1)
-		l = list(data[0].keys())
-		l.append("Azioni")
-		table.setHorizontalHeaderLabels(l)
+		columns_name = list(data[0].keys())
+		columns_name.append("Azioni")
+		table.setHorizontalHeaderLabels(columns_name)
 
 		# Popolo la tabella con le richieste di ferie
 		for i, row in enumerate(data):
 			for j, value in enumerate(row.values()):
 				item = QTableWidgetItem(value)
+				item.setFlags(Qt.ItemIsEnabled)
 				table.setItem(i, j, item)
 				table.setColumnWidth(j, 300)
-				if j == len(row)-1:
+				j += 1
+
+				# Se ho inserito tutti i campi, allora inserisco i bottoni
+				if j == table.columnCount()-1:
 					# Creo i bottoni
 					accept_button = QPushButton("Accetta")
 					reject_button = QPushButton("Rifiuta")
@@ -100,9 +104,9 @@ class HomeWindow(QWidget):
 					layout.addWidget(accept_button)
 					layout.addWidget(reject_button)
 					widget.setLayout(layout)
-					table.setCellWidget(i, j+1, widget)
-					table.setColumnWidth(j+1, 300)
-				j += 1
+					table.setCellWidget(i, table.columnCount()-1, widget)
+					table.setColumnWidth(table.columnCount()-1, 300)
+
 			table.setRowHeight(i, 100)
 			i += 1
 
@@ -151,4 +155,5 @@ class HomeWindow(QWidget):
 			item = QTableWidgetItem(text)
 			item.setForeground(color)
 			item.setTextAlignment(Qt.AlignCenter)
+			item.setFlags(Qt.ItemIsEnabled)
 			table.setItem(index, columns-1, item)
