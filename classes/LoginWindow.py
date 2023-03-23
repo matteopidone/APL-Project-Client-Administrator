@@ -78,7 +78,11 @@ class LoginWindow(QWidget):
 			if response.status_code == 200:
 				self.close()
 				self.dispatcher.get_window('HomeWindow').show()
-				self.dispatcher.set_token(response.json()['token'])
+
+				admin = self.dispatcher.get_window('Admin')
+				data = response.json()
+				admin.set_token(data['token'])
+				admin.set_email(data['email'])
 			else:
 				self.error_login_label.show()
 
