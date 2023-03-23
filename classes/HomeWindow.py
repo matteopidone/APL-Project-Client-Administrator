@@ -64,12 +64,12 @@ class HomeWindow(QWidget):
 	# Funzione per la creazione del layout di destra
 	def create_right_layout(self, right_layout):
 
+		# API per il recupero di tutte le ferie richieste dai dipendenti
 		data = self.getAllUsersHolidays()
 
 		# Creo la tabella
-		table = QTableWidget(len(data), len(data[0])+1)
-		columns_name = list(data[0].keys())
-		columns_name.append("Azioni")
+		columns_name = list("Email", "Nome", "Cognome", "Data", "Motivazione", "Stato", "Azioni")
+		table = QTableWidget(len(data), len(columns_name))
 		table.setHorizontalHeaderLabels(columns_name)
 
 		# Popolo la tabella con le richieste di ferie
@@ -83,6 +83,11 @@ class HomeWindow(QWidget):
 
 				# Se ho inserito tutti i campi, allora inserisco i bottoni
 				if j == table.columnCount()-1:
+
+					# Se lo stato della ferie non è più pendente, esco
+					if row['type'] != 0:
+						break
+
 					# Creo i bottoni
 					accept_button = QPushButton("Accetta")
 					reject_button = QPushButton("Rifiuta")
@@ -94,6 +99,7 @@ class HomeWindow(QWidget):
 					# Imposto la funzione da invocare al click
 					accept_button.clicked.connect(partial(self.updateRequest, row, 1, table, i))
 					reject_button.clicked.connect(partial(self.updateRequest, row, 2, table, i))
+
 					# Creo un contenitore e aggiungo i bottoni al layout a griglia
 					widget = QWidget()
 					layout = QHBoxLayout()
@@ -112,9 +118,10 @@ class HomeWindow(QWidget):
 	# Funzione per il recupero di tutte le richieste di ferie dei dipendenti
 	def getAllUsersHolidays(self):
 		token = self.dispatcher.get_token()
+		email = self.dispatcher.get_window("Admin").get_email()
 
 		headers = {'Authorization': 'Bearer ' + token}
-		url = os.environ.get('URL_GET_ALL_USERS_HOLIDAYS')
+		url = os.environ.get('URL_GET_ALL_USERS_HOLIDAYS') + '?email=' + email
 
 		try:
 			response = requests.get(url=url, headers=headers)
@@ -122,19 +129,23 @@ class HomeWindow(QWidget):
 			if response.status_code == 200:
 				data = list()
 
-				for holiday in response.json():
+				for user in response.json():
 					value = {}
-					value['Email'] = holiday['email']
-					value['Nome'] = holiday['name']
-					value['Cognome'] = holiday['surname']
-					value['Data'] = str(holiday['day']) + '-' + str(holiday['month']) + '-' + str(holiday['year'])
-					value['Motivazione'] = holiday['motivation']
+					value['email'] = holiday['email']
+					value['name'] = holiday['name']
+					value['surname'] = holiday['surname']
 
-					data.append(value)
+					for holiday in user['holidays']:
+
+						value['date'] = str(holiday['day']) + '-' + str(holiday['month']) + '-' + str(holiday['year'])
+						value['message'] = holiday['message']
+						value['type'] = holiday['type']
+
+						data.append(value)
 
 				return data
 			else:
-				return {'Email':'','Nome':'','Cognome':'','Data':'','Motivazione':''}
+				return {'Email':'','Nome':'','Cognome':'','Data':'','Motivazione':'','Stato':''}
 
 		except requests.exceptions.RequestException:
 			# Gestione dell'eccezione
@@ -143,10 +154,11 @@ class HomeWindow(QWidget):
 	# Funzione per la risposta alla richiesta di ferie
 	def updateRequest(self, row, type, table, index):
 		token = self.dispatcher.get_token()
+		day, month, year = map(int, row['date'].split('-'))
 
-		url = os.environ.get('URL_UPDATE_REQUEST')
 		headers = {'Authorization': 'Bearer ' + token}
-		json = {'email': row['email'], 'year': row['year'], 'month': row['month'], 'day': row['day'], 'type': type}
+		url = os.environ.get('URL_UPDATE_REQUEST')
+		json = {'email': row['email'], 'year': year, 'month': month, 'day': day, 'type': type}
 
 		try:
 			text = "Errore"
