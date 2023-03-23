@@ -66,10 +66,6 @@ class HomeWindow(QWidget):
 
 		data = self.getAllUsersHolidays()
 
-		user1 = {'name':'tomas', 'surname':'prifti', 'date':'21 Marzo 2023'}
-		user2 = {'name':'matteo', 'surname':'pidone', 'date':'22 Marzo 2023'}
-		data = [user1, user2]
-
 		# Creo la tabella
 		table = QTableWidget(len(data), len(data[0])+1)
 		columns_name = list(data[0].keys())
@@ -115,28 +111,47 @@ class HomeWindow(QWidget):
 
 	# Funzione per il recupero di tutte le richieste di ferie dei dipendenti
 	def getAllUsersHolidays(self):
+		token = self.dispatcher.get_token()
+
+		headers = {'Authorization': 'Bearer ' + token}
 		url = os.environ.get('URL_GET_ALL_USERS_HOLIDAYS')
 
 		try:
-			response = requests.get(url)
+			response = requests.get(url=url, headers=headers)
 
 			if response.status_code == 200:
-				return response.json()
+				data = list()
+
+				for holiday in response.json():
+					value = {}
+					value['Email'] = holiday['email']
+					value['Nome'] = holiday['name']
+					value['Cognome'] = holiday['surname']
+					value['Data'] = str(holiday['day']) + '-' + str(holiday['month']) + '-' + str(holiday['year'])
+					value['Motivazione'] = holiday['motivation']
+
+					data.append(value)
+
+				return data
 			else:
-				return
+				return {'Email':'','Nome':'','Cognome':'','Data':'','Motivazione':''}
+
 		except requests.exceptions.RequestException:
 			# Gestione dell'eccezione
 			print("Impossibile connettersi al server.")
 
 	# Funzione per la risposta alla richiesta di ferie
 	def updateRequest(self, row, type, table, index):
+		token = self.dispatcher.get_token()
+
 		url = os.environ.get('URL_UPDATE_REQUEST')
-		obj = {'email': row['email'], 'year': row['year'], 'month': row['month'], 'day': row['day'], 'type': type, 'token': 'abcdef'} # todo token
+		headers = {'Authorization': 'Bearer ' + token}
+		json = {'email': row['email'], 'year': row['year'], 'month': row['month'], 'day': row['day'], 'type': type}
 
 		try:
 			text = "Errore"
 			color = QColor("red")
-			response = requests.post(url=url, json=obj)
+			response = requests.post(url=url, json=json, headers=headers)
 
 			if response.status_code == 200:
 				if type == 1:
