@@ -5,7 +5,7 @@ import requests
 import os
 
 from functools import partial
-from classes.HolidayState import HolidayState
+from classes.EnumState import HolidayState, UserState
 
 class HomeWindow(QWidget):
 
@@ -56,6 +56,7 @@ class HomeWindow(QWidget):
 		button1.setFixedSize(250, 50)
 		button2.setFont(font)
 		button2.setFixedSize(250, 50)
+		button2.clicked.connect(self.create_window_add_employee)
 		button3.setFont(font)
 		button3.setFixedSize(250, 50)
 		button3.setStyleSheet("background-color: red")
@@ -141,6 +142,11 @@ class HomeWindow(QWidget):
 		# Aggiungo la tabella al layout di destra
 		right_layout.addWidget(table)
 
+	# Funzione per la creazione della finestra per inserimento nuovi dipendenti
+	def create_window_add_employee(self):
+		# creare un bottone -> click -> addEmployee
+		pass
+
 	# Funzione per il recupero di tutte le richieste di ferie dei dipendenti
 	def getAllUsersHolidays(self):
 		admin = self.dispatcher.get_class("Admin")
@@ -169,8 +175,6 @@ class HomeWindow(QWidget):
 						data.append(value)
 
 				return data
-			else:
-				return
 
 		except requests.exceptions.RequestException:
 			# Gestione dell'eccezione
@@ -210,3 +214,21 @@ class HomeWindow(QWidget):
 			item.setTextAlignment(Qt.AlignCenter)
 			item.setFlags(Qt.ItemIsEnabled)
 			table.setItem(index, columns-1, item)
+
+	# Funzione per l'inserimento di un nuovo dipendente
+	def addEmployee(self, email, password, name, surname):
+		admin = self.dispatcher.get_class("Admin")
+
+		headers = {'Authorization': 'Bearer ' + admin.get_token()}
+		url = os.environ.get('URL_INSERT_USER')
+		json = {'email': email, 'password': password, 'name': name, 'surname': surname, 'role': UserState.Employee.value}
+
+		try:
+			response = requests.post(url=url, json=json, headers=headers)
+
+			return response.status_code == 200
+
+		except requests.exceptions.RequestException:
+			# Gestione dell'eccezione
+			print("Impossibile connettersi al server.")
+			return False
