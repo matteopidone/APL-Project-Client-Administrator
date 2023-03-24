@@ -1,4 +1,5 @@
-from PySide6.QtWidgets import QWidget
+from PySide6.QtCore import Qt
+from PySide6.QtWidgets import QWidget, QGridLayout, QTableWidget, QTableWidgetItem, QHeaderView
 from PySide6.QtGui import QFont
 
 class AllEmployeesWindow(QWidget):
@@ -22,4 +23,27 @@ class AllEmployeesWindow(QWidget):
 
 	# Funzione per la generazione dell'interfaccia grafica
 	def create_interface(self):
-		pass
+		data = self.dispatcher.get_class("Admin").get_employees()
+
+		# Creo la tabella
+		columns_name = ["Email", "Nome", "Cognome"]
+		table = QTableWidget(len(data), len(columns_name))
+		table.setHorizontalHeaderLabels(columns_name)
+		table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+
+		# Popolo la tabella con i dipendenti
+		for i, row in enumerate(data):
+			for j, value in enumerate(row.values()):
+
+				item = QTableWidgetItem(value)
+				item.setFlags(Qt.ItemIsEnabled)
+				table.setItem(i, j, item)
+				j += 1
+
+			table.setRowHeight(i, 100)
+			i += 1
+
+		# Aggiungo la tabella al layout
+		layout = QGridLayout()
+		layout.addWidget(table)
+		self.setLayout(layout)
