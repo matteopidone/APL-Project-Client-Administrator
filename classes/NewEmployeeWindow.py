@@ -111,14 +111,18 @@ class NewEmployeeWindow(QWidget):
 			response = requests.post(url=url, json=json, headers=headers)
 
 			if response.status_code == 200:
-				# Svuoto i valori di input
 				self.error_add_label.hide()
 				self.success_add_label.show()
+
+				# Svuoto i valori di input
 				self.email_input.clear()
 				self.password_input.clear()
 				self.name_input.clear()
 				self.surname_input.clear()
 				self.description_input.clear()
+
+				# Aggiungo il dipendente all'elenco
+				admin.add_employee({'email': email, 'name': name, 'surname': surname})
 			else:
 				self.error_add_label.show()
 				self.success_add_label.hide()
