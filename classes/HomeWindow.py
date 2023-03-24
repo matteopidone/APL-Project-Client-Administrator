@@ -1,5 +1,5 @@
 from PySide6.QtCore import Qt
-from PySide6.QtWidgets import QWidget, QVBoxLayout, QPushButton, QGridLayout, QTableWidget, QTableWidgetItem, QHBoxLayout
+from PySide6.QtWidgets import QWidget, QVBoxLayout, QPushButton, QGridLayout, QTableWidget, QTableWidgetItem, QHBoxLayout, QHeaderView
 from PySide6.QtGui import QFont, QColor
 import requests
 import os
@@ -67,10 +67,15 @@ class HomeWindow(QWidget):
 		# API per il recupero di tutte le ferie richieste dai dipendenti
 		data = self.getAllUsersHolidays()
 
+		if not data:
+			# Creo comunque la tabella senza nessuna richiesta
+			data = list()
+
 		# Creo la tabella
-		columns_name = list("Email", "Nome", "Cognome", "Data", "Motivazione", "Stato", "Azioni")
+		columns_name = ["Email", "Nome", "Cognome", "Data", "Motivazione", "Stato", "Azioni"]
 		table = QTableWidget(len(data), len(columns_name))
 		table.setHorizontalHeaderLabels(columns_name)
+		table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
 
 		# Popolo la tabella con le richieste di ferie
 		for i, row in enumerate(data):
@@ -144,7 +149,7 @@ class HomeWindow(QWidget):
 
 				return data
 			else:
-				return {'Email':'','Nome':'','Cognome':'','Data':'','Motivazione':'','Stato':''}
+				return
 
 		except requests.exceptions.RequestException:
 			# Gestione dell'eccezione

@@ -14,13 +14,14 @@ if __name__ == "__main__":
 	app = QApplication([])
 	dispatcher = Dispatcher()
 
-	login_window = LoginWindow(dispatcher)
-	home_window = HomeWindow(dispatcher)
 	admin = Admin(dispatcher)
-
-	dispatcher.set_class("LoginWindow", login_window)
-	dispatcher.set_class("HomeWindow", home_window)
 	dispatcher.set_class("Admin", admin)
+
+	login_window = LoginWindow(dispatcher)
+	dispatcher.set_class("LoginWindow", login_window)
+
+	home_window = HomeWindow(dispatcher)
+	dispatcher.set_class("HomeWindow", home_window)
 
 	# Mostro il login
 	login_window.show()

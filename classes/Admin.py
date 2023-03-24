@@ -2,6 +2,10 @@ class Admin():
 	token = ''
 	email = ''
 
+	def __init__(self, dispatcher):
+		# Inizializzo il riferimento al Dispatcher
+		self.dispatcher = dispatcher
+
 	# Funzione per inizializzare il token
 	def set_token(self, token):
 		self.token = token
