@@ -1,7 +1,7 @@
 from PySide6.QtWidgets import QApplication
 from dotenv import load_dotenv
 
-from classes.DispatcherWindow import DispatcherWindow
+from classes.Dispatcher import Dispatcher
 from classes.LoginWindow import LoginWindow
 from classes.HomeWindow import HomeWindow
 from classes.Admin import Admin
@@ -12,15 +12,15 @@ if __name__ == "__main__":
 
 	# Inizializzo l'applicazione
 	app = QApplication([])
-	dispatcher = DispatcherWindow()
+	dispatcher = Dispatcher()
 
 	login_window = LoginWindow(dispatcher)
 	home_window = HomeWindow(dispatcher)
 	admin = Admin(dispatcher)
 
-	dispatcher.set_window("LoginWindow", login_window)
-	dispatcher.set_window("HomeWindow", home_window)
-	dispatcher.set_window("Admin", admin)
+	dispatcher.set_class("LoginWindow", login_window)
+	dispatcher.set_class("HomeWindow", home_window)
+	dispatcher.set_class("Admin", admin)
 
 	# Mostro il login
 	login_window.show()

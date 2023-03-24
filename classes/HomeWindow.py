@@ -117,7 +117,7 @@ class HomeWindow(QWidget):
 
 	# Funzione per il recupero di tutte le richieste di ferie dei dipendenti
 	def getAllUsersHolidays(self):
-		admin = self.dispatcher.get_window("Admin")
+		admin = self.dispatcher.get_class("Admin")
 
 		headers = {'Authorization': 'Bearer ' + admin.get_token()}
 		url = os.environ.get('URL_GET_ALL_USERS_HOLIDAYS') + '?email=' + admin.get_email()
@@ -152,7 +152,7 @@ class HomeWindow(QWidget):
 
 	# Funzione per la risposta alla richiesta di ferie
 	def updateRequest(self, row, type, table, index):
-		admin = self.dispatcher.get_window("Admin")
+		admin = self.dispatcher.get_class("Admin")
 
 		day, month, year = map(int, row['date'].split('-'))
 
