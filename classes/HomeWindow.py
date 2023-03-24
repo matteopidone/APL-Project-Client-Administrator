@@ -47,16 +47,17 @@ class HomeWindow(QWidget):
 	# Funzione per la creazione del layout di sinistra
 	def create_left_layout(self, left_layout):
 		# Creo i bottoni
-		button1 = QPushButton("Elenco dipendenti")
-		button2 = QPushButton("Aggiungi dipendente")
+		button1 = QPushButton("Aggiungi dipendente")
+		button2 = QPushButton("Elenco dipendenti")
 		button3 = QPushButton("Esci")
 
 		font = QFont("Arial", 16)
 		button1.setFont(font)
 		button1.setFixedSize(250, 50)
+		button1.clicked.connect(self.show_window_add_employee)
 		button2.setFont(font)
 		button2.setFixedSize(250, 50)
-		button2.clicked.connect(self.show_window_add_employee)
+		button2.clicked.connect(self.show_window_all_employees)
 		button3.setFont(font)
 		button3.setFixedSize(250, 50)
 		button3.setStyleSheet("background-color: red")
@@ -141,6 +142,10 @@ class HomeWindow(QWidget):
 
 		# Aggiungo la tabella al layout di destra
 		right_layout.addWidget(table)
+
+	# Funzione per visualizzare la finestra con l'elenco di tutti i dipendenti
+	def show_window_all_employees(self):
+		self.dispatcher.get_class("AllEmployeesWindow").show()
 
 	# Funzione per visualizzare la finestra per l'inserimento nuovi dipendenti
 	def show_window_add_employee(self):

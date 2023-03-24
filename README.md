@@ -27,3 +27,4 @@ All'interno della directory `classes` sono presenti tutte le classi utilizzate, 
 -	`Admin`, per la gestione delle informazioni dell'admin (dopo il login)
 -	`EnumState`, per la gestione dello stato di `HolidayState` e `UserState`
 -	`NewEmployeeWindow`, per la gestione della finestra per l'inserimento dei nuovi dipendenti
+-	`AllEmployeesWindow`, per la gestione della finestra con l'elenco di tutti i dipendenti
