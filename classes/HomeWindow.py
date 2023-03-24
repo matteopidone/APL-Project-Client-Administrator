@@ -155,6 +155,7 @@ class HomeWindow(QWidget):
 	def getAllUsersHolidays(self):
 		admin = self.dispatcher.get_class("Admin")
 
+		# Preparo la request
 		headers = {'Authorization': 'Bearer ' + admin.get_token()}
 		url = os.environ.get('URL_GET_ALL_USERS_HOLIDAYS') + '?email=' + admin.get_email()
 
@@ -163,9 +164,14 @@ class HomeWindow(QWidget):
 			result = response.json()
 
 			if response.status_code == 200 and result != None:
+				# Lista che conterrà l'elenco di ferie
 				data = list()
 
 				for user in result:
+					# Aggiungo il dipendente all'elenco dipendenti
+					admin.add_employee({'email': user['email'], 'name': user['name'], 'surname': user['surname']})
+
+					# Creo l'elenco di ferie
 					for holiday in user['holidays']:
 						value = {}
 						value['email'] = user['email']
@@ -176,6 +182,7 @@ class HomeWindow(QWidget):
 						value['message'] = holiday['message']
 						value['type'] = holiday['type']
 
+						# Aggiungo alla lista di ferie
 						data.append(value)
 
 				return data
@@ -190,6 +197,7 @@ class HomeWindow(QWidget):
 
 		day, month, year = map(int, row['date'].split('-'))
 
+		# Preparo la request
 		headers = {'Authorization': 'Bearer ' + admin.get_token()}
 		url = os.environ.get('URL_UPDATE_REQUEST')
 		json = {'email': row['email'], 'year': year, 'month': month, 'day': day, 'type': type}
