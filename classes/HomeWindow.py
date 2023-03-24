@@ -5,6 +5,7 @@ import requests
 import os
 
 from functools import partial
+from classes.HolidayState import HolidayState
 
 class HomeWindow(QWidget):
 
@@ -75,7 +76,7 @@ class HomeWindow(QWidget):
 			data = list()
 
 		# Creo la tabella
-		columns_name = ["Email", "Nome", "Cognome", "Data", "Motivazione", "Stato", "Azioni"]
+		columns_name = ["Email", "Nome", "Cognome", "Data", "Motivazione", "Stato"]
 		table = QTableWidget(len(data), len(columns_name))
 		table.setHorizontalHeaderLabels(columns_name)
 		table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
@@ -83,17 +84,28 @@ class HomeWindow(QWidget):
 		# Popolo la tabella con le richieste di ferie
 		for i, row in enumerate(data):
 			for j, value in enumerate(row.values()):
-				item = QTableWidgetItem(value)
-				item.setFlags(Qt.ItemIsEnabled)
-				item.setFont(QFont("Arial", 14))
-				table.setItem(i, j, item)
-				j += 1
 
-				# Se ho inserito tutti i campi, allora inserisco i bottoni
+				# Se sono alla fine
 				if j == table.columnCount()-1:
 
-					# Se lo stato della ferie non è più pendente, esco
-					if row['type'] != 0:
+					# Se lo stato della ferie non è pendente, inserisco lo stato
+					if row['type'] != HolidayState.Pending.value:
+
+						text = "Errore"
+						color = QColor("red")
+						match row['type']:
+							case HolidayState.Accepted.value:
+								text = "Accettata"
+								color = QColor("green")
+							case HolidayState.Refused.value:
+								text = "Rifiutata"
+
+						item = QTableWidgetItem(text)
+						item.setFlags(Qt.ItemIsEnabled)
+						item.setForeground(color)
+						item.setTextAlignment(Qt.AlignCenter)
+						table.setItem(i, j, item)
+						j += 1
 						break
 
 					# Creo i bottoni
@@ -105,8 +117,8 @@ class HomeWindow(QWidget):
 					reject_button.setFixedSize(75, 30)
 					reject_button.setStyleSheet("background-color: red")
 					# Imposto la funzione da invocare al click
-					accept_button.clicked.connect(partial(self.updateRequest, row, 1, table, i))
-					reject_button.clicked.connect(partial(self.updateRequest, row, 2, table, i))
+					accept_button.clicked.connect(partial(self.updateRequest, row, HolidayState.Accepted.value, table, i))
+					reject_button.clicked.connect(partial(self.updateRequest, row, HolidayState.Refused.value, table, i))
 
 					# Creo un contenitore e aggiungo i bottoni al layout a griglia
 					widget = QWidget()
@@ -115,6 +127,13 @@ class HomeWindow(QWidget):
 					layout.addWidget(reject_button)
 					widget.setLayout(layout)
 					table.setCellWidget(i, table.columnCount()-1, widget)
+					break
+
+				item = QTableWidgetItem(value)
+				item.setFlags(Qt.ItemIsEnabled)
+				item.setFont(QFont("Arial", 16))
+				table.setItem(i, j, item)
+				j += 1
 
 			table.setRowHeight(i, 100)
 			i += 1
@@ -173,10 +192,10 @@ class HomeWindow(QWidget):
 			response = requests.post(url=url, json=json, headers=headers)
 
 			if response.status_code == 200:
-				if type == 1:
+				if type == HolidayState.Accepted.value:
 					text = "Accettata"
 					color = QColor("green")
-				elif type == 2:
+				elif type == HolidayState.Refused.value:
 					text = "Rifiutata"
 
 		except requests.exceptions.RequestException:
