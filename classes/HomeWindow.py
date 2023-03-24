@@ -117,11 +117,10 @@ class HomeWindow(QWidget):
 
 	# Funzione per il recupero di tutte le richieste di ferie dei dipendenti
 	def getAllUsersHolidays(self):
-		token = self.dispatcher.get_token()
-		email = self.dispatcher.get_window("Admin").get_email()
+		admin = self.dispatcher.get_window("Admin")
 
-		headers = {'Authorization': 'Bearer ' + token}
-		url = os.environ.get('URL_GET_ALL_USERS_HOLIDAYS') + '?email=' + email
+		headers = {'Authorization': 'Bearer ' + admin.get_token()}
+		url = os.environ.get('URL_GET_ALL_USERS_HOLIDAYS') + '?email=' + admin.get_email()
 
 		try:
 			response = requests.get(url=url, headers=headers)
@@ -153,10 +152,11 @@ class HomeWindow(QWidget):
 
 	# Funzione per la risposta alla richiesta di ferie
 	def updateRequest(self, row, type, table, index):
-		token = self.dispatcher.get_token()
+		admin = self.dispatcher.get_window("Admin")
+
 		day, month, year = map(int, row['date'].split('-'))
 
-		headers = {'Authorization': 'Bearer ' + token}
+		headers = {'Authorization': 'Bearer ' + admin.get_token()}
 		url = os.environ.get('URL_UPDATE_REQUEST')
 		json = {'email': row['email'], 'year': year, 'month': month, 'day': day, 'type': type}
 
