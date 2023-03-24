@@ -25,3 +25,5 @@ All'interno della directory `classes` sono presenti tutte le classi utilizzate, 
 -	`LoginWindow`, per la gestione del login dell'amministratore
 -	`HomeWindow`, per la gestione della finestra di home
 -	`Admin`, per la gestione delle informazioni dell'admin (dopo il login)
+-	`EnumState`, per la gestione dello stato di `HolidayState` e `UserState`
+-	`NewEmployeeWindow`, per la gestione della finestra per l'inserimento dei nuovi dipendenti
