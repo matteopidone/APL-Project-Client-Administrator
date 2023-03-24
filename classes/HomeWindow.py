@@ -18,9 +18,11 @@ class HomeWindow(QWidget):
 		# Definisco lo stile
 		self.setWindowTitle("Home")
 		self.resize(1600, 800)
-		self.setFont(QFont("Arial", 24))
+		self.setFont(QFont("Arial", 20))
 
+	def show(self):
 		self.create_interface()
+		super().show()
 
 	# Funzione per la generazione dell'interfaccia grafica
 	def create_interface(self):
@@ -47,13 +49,13 @@ class HomeWindow(QWidget):
 		button2 = QPushButton("Aggiungi dipendente")
 		button3 = QPushButton("Esci")
 
-		font = QFont("Arial", 22)
+		font = QFont("Arial", 16)
 		button1.setFont(font)
-		button1.setFixedSize(350, 50)
+		button1.setFixedSize(250, 50)
 		button2.setFont(font)
-		button2.setFixedSize(350, 50)
+		button2.setFixedSize(250, 50)
 		button3.setFont(font)
-		button3.setFixedSize(350, 50)
+		button3.setFixedSize(250, 50)
 		button3.setStyleSheet("background-color: red")
 
 		# Li aggiungo al layout di sinistra
@@ -82,8 +84,8 @@ class HomeWindow(QWidget):
 			for j, value in enumerate(row.values()):
 				item = QTableWidgetItem(value)
 				item.setFlags(Qt.ItemIsEnabled)
+				item.setFont(QFont("Arial", 14))
 				table.setItem(i, j, item)
-				table.setColumnWidth(j, 300)
 				j += 1
 
 				# Se ho inserito tutti i campi, allora inserisco i bottoni
@@ -97,9 +99,9 @@ class HomeWindow(QWidget):
 					accept_button = QPushButton("Accetta")
 					reject_button = QPushButton("Rifiuta")
 					# Imposto lo stile dei bottoni
-					accept_button.setFixedSize(100, 50)
+					accept_button.setFixedSize(75, 30)
 					accept_button.setStyleSheet("background-color: green")
-					reject_button.setFixedSize(100, 50)
+					reject_button.setFixedSize(75, 30)
 					reject_button.setStyleSheet("background-color: red")
 					# Imposto la funzione da invocare al click
 					accept_button.clicked.connect(partial(self.updateRequest, row, 1, table, i))
@@ -112,7 +114,6 @@ class HomeWindow(QWidget):
 					layout.addWidget(reject_button)
 					widget.setLayout(layout)
 					table.setCellWidget(i, table.columnCount()-1, widget)
-					table.setColumnWidth(table.columnCount()-1, 300)
 
 			table.setRowHeight(i, 100)
 			i += 1
@@ -129,17 +130,17 @@ class HomeWindow(QWidget):
 
 		try:
 			response = requests.get(url=url, headers=headers)
+			result = response.json()
 
-			if response.status_code == 200:
+			if response.status_code == 200 and result != None:
 				data = list()
 
-				for user in response.json():
-					value = {}
-					value['email'] = holiday['email']
-					value['name'] = holiday['name']
-					value['surname'] = holiday['surname']
-
+				for user in result:
 					for holiday in user['holidays']:
+						value = {}
+						value['email'] = user['email']
+						value['name'] = user['name']
+						value['surname'] = user['surname']
 
 						value['date'] = str(holiday['day']) + '-' + str(holiday['month']) + '-' + str(holiday['year'])
 						value['message'] = holiday['message']

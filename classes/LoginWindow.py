@@ -18,7 +18,9 @@ class LoginWindow(QWidget):
 		self.resize(400, 200)
 		self.setFont(QFont("Arial", 20))
 
+	def show(self):
 		self.create_interface()
+		super().show()
 
 	# Funzione per la generazione dell'interfaccia grafica
 	def create_interface(self):
@@ -76,13 +78,13 @@ class LoginWindow(QWidget):
 			response = requests.post(url=url_login, json=obj)
 
 			if response.status_code == 200:
-				self.close()
-				self.dispatcher.get_class('HomeWindow').show()
-
 				admin = self.dispatcher.get_class('Admin')
 				data = response.json()
 				admin.set_token(data['token'])
 				admin.set_email(data['email'])
+
+				self.close()
+				self.dispatcher.get_class('HomeWindow').show()
 			else:
 				self.error_login_label.show()
 
