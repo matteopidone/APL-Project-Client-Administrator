@@ -20,6 +20,7 @@ class HomeWindow(QWidget):
 		self.resize(1600, 800)
 		self.setFont(QFont("Arial", 20))
 
+	# Override funzione show per creare prima l'interfaccia
 	def show(self):
 		self.create_interface()
 		super().show()

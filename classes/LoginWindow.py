@@ -18,6 +18,7 @@ class LoginWindow(QWidget):
 		self.resize(400, 200)
 		self.setFont(QFont("Arial", 20))
 
+	# Override funzione show per creare prima l'interfaccia
 	def show(self):
 		self.create_interface()
 		super().show()
