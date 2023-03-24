@@ -1,6 +1,4 @@
 class Admin():
-	token = ''
-	email = ''
 
 	def __init__(self, dispatcher):
 		# Inizializzo il riferimento al Dispatcher

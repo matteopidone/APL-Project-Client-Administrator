@@ -1,5 +1,7 @@
 class Dispatcher():
-	classes = {}
+
+	def __init__(self):
+		self.classes = {}
 
 	# Funzione per registrare le istanze delle classi
 	def set_class(self, key, instance):
