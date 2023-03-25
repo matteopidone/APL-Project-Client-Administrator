@@ -23,6 +23,10 @@ class AllEmployeesWindow(QWidget):
 
 	# Funzione per la generazione dell'interfaccia grafica
 	def create_interface(self):
+		# Rimuovo il layout esistente
+		if self.layout() != None:
+			self.layout().deleteLater()
+
 		data = self.dispatcher.get_class("Admin").get_employees()
 
 		# Creo la tabella
