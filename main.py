@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 from classes.Dispatcher import Dispatcher
 from classes.LoginWindow import LoginWindow
 from classes.HomeWindow import HomeWindow
+from classes.NewEmployeeWindow import NewEmployeeWindow
 from classes.Admin import Admin
 
 if __name__ == "__main__":
@@ -22,6 +23,9 @@ if __name__ == "__main__":
 
 	home_window = HomeWindow(dispatcher)
 	dispatcher.set_class("HomeWindow", home_window)
+
+	new_employee_window = NewEmployeeWindow(dispatcher)
+	dispatcher.set_class("NewEmployeeWindow", new_employee_window)
 
 	# Mostro il login
 	login_window.show()

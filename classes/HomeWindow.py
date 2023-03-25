@@ -5,7 +5,7 @@ import requests
 import os
 
 from functools import partial
-from classes.HolidayState import HolidayState
+from classes.EnumState import HolidayState
 
 class HomeWindow(QWidget):
 
@@ -56,6 +56,7 @@ class HomeWindow(QWidget):
 		button1.setFixedSize(250, 50)
 		button2.setFont(font)
 		button2.setFixedSize(250, 50)
+		button2.clicked.connect(self.show_window_add_employee)
 		button3.setFont(font)
 		button3.setFixedSize(250, 50)
 		button3.setStyleSheet("background-color: red")
@@ -141,6 +142,10 @@ class HomeWindow(QWidget):
 		# Aggiungo la tabella al layout di destra
 		right_layout.addWidget(table)
 
+	# Funzione per visualizzare la finestra per l'inserimento nuovi dipendenti
+	def show_window_add_employee(self):
+		self.dispatcher.get_class("NewEmployeeWindow").show()
+
 	# Funzione per il recupero di tutte le richieste di ferie dei dipendenti
 	def getAllUsersHolidays(self):
 		admin = self.dispatcher.get_class("Admin")
@@ -169,8 +174,6 @@ class HomeWindow(QWidget):
 						data.append(value)
 
 				return data
-			else:
-				return
 
 		except requests.exceptions.RequestException:
 			# Gestione dell'eccezione
