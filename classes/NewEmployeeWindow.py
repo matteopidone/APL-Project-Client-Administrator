@@ -14,15 +14,18 @@ class NewEmployeeWindow(QWidget):
 
 		# Inizializzo il riferimento al Dispatcher
 		self.dispatcher = dispatcher
+		self.interface_created = False
 
 		# Definisco lo stile
 		self.setWindowTitle("Nuovo Dipendente")
-		self.resize(350, 400)
+		self.resize(500, 400)
 		self.setFont(QFont("Arial", 20))
 
 	# Override funzione show per creare prima l'interfaccia
 	def show(self):
-		self.create_interface()
+		if not self.interface_created:
+			self.create_interface()
+			self.interface_created = True
 		super().show()
 
 	# Funzione per la generazione dell'interfaccia grafica
