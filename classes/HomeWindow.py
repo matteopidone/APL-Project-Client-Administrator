@@ -173,7 +173,7 @@ class HomeWindow(QWidget):
 
 				for user in result:
 					# Aggiungo il dipendente all'elenco dipendenti
-					admin.add_employee({'email': user['email'], 'name': user['name'], 'surname': user['surname']})
+					admin.add_employee({'email': user['email'], 'name': user['name'], 'surname': user['surname'], 'description': user['description']})
 
 					# Creo l'elenco di ferie
 					for holiday in user['holidays']:

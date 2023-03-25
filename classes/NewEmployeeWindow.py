@@ -125,7 +125,7 @@ class NewEmployeeWindow(QWidget):
 				self.description_input.clear()
 
 				# Aggiungo il dipendente all'elenco
-				admin.add_employee({'email': email, 'name': name, 'surname': surname})
+				admin.add_employee({'email': email, 'name': name, 'surname': surname, 'description': description})
 			else:
 				self.error_add_label.show()
 				self.success_add_label.hide()

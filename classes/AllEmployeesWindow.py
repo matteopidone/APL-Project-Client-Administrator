@@ -30,7 +30,7 @@ class AllEmployeesWindow(QWidget):
 		data = self.dispatcher.get_class("Admin").get_employees()
 
 		# Creo la tabella
-		columns_name = ["Email", "Nome", "Cognome"]
+		columns_name = ["Email", "Nome", "Cognome", "Descrizione"]
 		table = QTableWidget(len(data), len(columns_name))
 		table.setHorizontalHeaderLabels(columns_name)
 		table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
@@ -41,6 +41,7 @@ class AllEmployeesWindow(QWidget):
 
 				item = QTableWidgetItem(value)
 				item.setFlags(Qt.ItemIsEnabled)
+				item.setFont(QFont("Arial", 16))
 				table.setItem(i, j, item)
 				j += 1
 
