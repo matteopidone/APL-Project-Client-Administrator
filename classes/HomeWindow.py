@@ -49,7 +49,6 @@ class HomeWindow(QWidget):
 		# Creo i bottoni
 		button1 = QPushButton("Aggiungi dipendente")
 		button2 = QPushButton("Elenco dipendenti")
-		button3 = QPushButton("Esci")
 
 		font = QFont("Arial", 16)
 		button1.setFont(font)
@@ -58,14 +57,10 @@ class HomeWindow(QWidget):
 		button2.setFont(font)
 		button2.setFixedSize(250, 50)
 		button2.clicked.connect(self.show_window_all_employees)
-		button3.setFont(font)
-		button3.setFixedSize(250, 50)
-		button3.setStyleSheet("background-color: red")
 
 		# Li aggiungo al layout di sinistra
 		left_layout.addWidget(button1)
 		left_layout.addWidget(button2)
-		left_layout.addWidget(button3)
 
 	# Funzione per la creazione del layout di destra
 	def create_right_layout(self, right_layout):
