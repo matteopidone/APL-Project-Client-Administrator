@@ -145,11 +145,15 @@ class HomeWindow(QWidget):
 
 	# Funzione per visualizzare la finestra con l'elenco di tutti i dipendenti
 	def show_window_all_employees(self):
-		self.dispatcher.get_class("AllEmployeesWindow").show()
+		all_employees_window = self.dispatcher.get_class("AllEmployeesWindow")
+		if not all_employees_window.isVisible():
+			all_employees_window.show()
 
 	# Funzione per visualizzare la finestra per l'inserimento nuovi dipendenti
 	def show_window_add_employee(self):
-		self.dispatcher.get_class("NewEmployeeWindow").show()
+		new_employee_window = self.dispatcher.get_class("NewEmployeeWindow")
+		if not new_employee_window.isVisible():
+			new_employee_window.show()
 
 	# Funzione per il recupero di tutte le richieste di ferie dei dipendenti
 	def getAllUsersHolidays(self):
