@@ -2,10 +2,10 @@ from PySide6.QtWidgets import QApplication
 from dotenv import load_dotenv
 
 from classes.Dispatcher import Dispatcher
-from classes.LoginWindow import LoginWindow
-from classes.HomeWindow import HomeWindow
-from classes.NewEmployeeWindow import NewEmployeeWindow
-from classes.AllEmployeesWindow import AllEmployeesWindow
+from windows.LoginWindow import LoginWindow
+from windows.HomeWindow import HomeWindow
+from windows.NewEmployeeWindow import NewEmployeeWindow
+from windows.AllEmployeesWindow import AllEmployeesWindow
 from classes.Admin import Admin
 
 if __name__ == "__main__":
