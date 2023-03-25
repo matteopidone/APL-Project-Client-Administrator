@@ -40,7 +40,7 @@ class AllEmployeesWindow(QWidget):
 				table.setItem(i, j, item)
 				j += 1
 
-			table.setRowHeight(i, 100)
+			table.setRowHeight(i, 50)
 			i += 1
 
 		# Aggiungo la tabella al layout
