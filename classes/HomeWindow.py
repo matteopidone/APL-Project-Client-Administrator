@@ -47,16 +47,17 @@ class HomeWindow(QWidget):
 	# Funzione per la creazione del layout di sinistra
 	def create_left_layout(self, left_layout):
 		# Creo i bottoni
-		button1 = QPushButton("Elenco dipendenti")
-		button2 = QPushButton("Aggiungi dipendente")
+		button1 = QPushButton("Aggiungi dipendente")
+		button2 = QPushButton("Elenco dipendenti")
 		button3 = QPushButton("Esci")
 
 		font = QFont("Arial", 16)
 		button1.setFont(font)
 		button1.setFixedSize(250, 50)
+		button1.clicked.connect(self.show_window_add_employee)
 		button2.setFont(font)
 		button2.setFixedSize(250, 50)
-		button2.clicked.connect(self.show_window_add_employee)
+		button2.clicked.connect(self.show_window_all_employees)
 		button3.setFont(font)
 		button3.setFixedSize(250, 50)
 		button3.setStyleSheet("background-color: red")
@@ -142,14 +143,23 @@ class HomeWindow(QWidget):
 		# Aggiungo la tabella al layout di destra
 		right_layout.addWidget(table)
 
+	# Funzione per visualizzare la finestra con l'elenco di tutti i dipendenti
+	def show_window_all_employees(self):
+		all_employees_window = self.dispatcher.get_class("AllEmployeesWindow")
+		if not all_employees_window.isVisible():
+			all_employees_window.show()
+
 	# Funzione per visualizzare la finestra per l'inserimento nuovi dipendenti
 	def show_window_add_employee(self):
-		self.dispatcher.get_class("NewEmployeeWindow").show()
+		new_employee_window = self.dispatcher.get_class("NewEmployeeWindow")
+		if not new_employee_window.isVisible():
+			new_employee_window.show()
 
 	# Funzione per il recupero di tutte le richieste di ferie dei dipendenti
 	def getAllUsersHolidays(self):
 		admin = self.dispatcher.get_class("Admin")
 
+		# Preparo la request
 		headers = {'Authorization': 'Bearer ' + admin.get_token()}
 		url = os.environ.get('URL_GET_ALL_USERS_HOLIDAYS') + '?email=' + admin.get_email()
 
@@ -158,9 +168,14 @@ class HomeWindow(QWidget):
 			result = response.json()
 
 			if response.status_code == 200 and result != None:
+				# Lista che conterrà l'elenco di ferie
 				data = list()
 
 				for user in result:
+					# Aggiungo il dipendente all'elenco dipendenti
+					admin.add_employee({'email': user['email'], 'name': user['name'], 'surname': user['surname'], 'description': user['description']})
+
+					# Creo l'elenco di ferie
 					for holiday in user['holidays']:
 						value = {}
 						value['email'] = user['email']
@@ -171,6 +186,7 @@ class HomeWindow(QWidget):
 						value['message'] = holiday['message']
 						value['type'] = holiday['type']
 
+						# Aggiungo alla lista di ferie
 						data.append(value)
 
 				return data
@@ -185,6 +201,7 @@ class HomeWindow(QWidget):
 
 		day, month, year = map(int, row['date'].split('-'))
 
+		# Preparo la request
 		headers = {'Authorization': 'Bearer ' + admin.get_token()}
 		url = os.environ.get('URL_UPDATE_REQUEST')
 		json = {'email': row['email'], 'year': year, 'month': month, 'day': day, 'type': type}

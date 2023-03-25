@@ -5,6 +5,7 @@ from classes.Dispatcher import Dispatcher
 from classes.LoginWindow import LoginWindow
 from classes.HomeWindow import HomeWindow
 from classes.NewEmployeeWindow import NewEmployeeWindow
+from classes.AllEmployeesWindow import AllEmployeesWindow
 from classes.Admin import Admin
 
 if __name__ == "__main__":
@@ -26,6 +27,9 @@ if __name__ == "__main__":
 
 	new_employee_window = NewEmployeeWindow(dispatcher)
 	dispatcher.set_class("NewEmployeeWindow", new_employee_window)
+
+	all_employees_window = AllEmployeesWindow(dispatcher)
+	dispatcher.set_class("AllEmployeesWindow", all_employees_window)
 
 	# Mostro il login
 	login_window.show()

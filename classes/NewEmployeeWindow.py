@@ -14,15 +14,18 @@ class NewEmployeeWindow(QWidget):
 
 		# Inizializzo il riferimento al Dispatcher
 		self.dispatcher = dispatcher
+		self.interface_created = False
 
 		# Definisco lo stile
 		self.setWindowTitle("Nuovo Dipendente")
-		self.resize(350, 400)
+		self.resize(500, 400)
 		self.setFont(QFont("Arial", 20))
 
 	# Override funzione show per creare prima l'interfaccia
 	def show(self):
-		self.create_interface()
+		if not self.interface_created:
+			self.create_interface()
+			self.interface_created = True
 		super().show()
 
 	# Funzione per la generazione dell'interfaccia grafica
@@ -111,14 +114,18 @@ class NewEmployeeWindow(QWidget):
 			response = requests.post(url=url, json=json, headers=headers)
 
 			if response.status_code == 200:
-				# Svuoto i valori di input
 				self.error_add_label.hide()
 				self.success_add_label.show()
+
+				# Svuoto i valori di input
 				self.email_input.clear()
 				self.password_input.clear()
 				self.name_input.clear()
 				self.surname_input.clear()
 				self.description_input.clear()
+
+				# Aggiungo il dipendente all'elenco
+				admin.add_employee({'email': email, 'name': name, 'surname': surname, 'description': description})
 			else:
 				self.error_add_label.show()
 				self.success_add_label.hide()
