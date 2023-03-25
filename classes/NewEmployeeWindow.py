@@ -44,6 +44,10 @@ class NewEmployeeWindow(QWidget):
 		surname_label = QLabel("Cognome:")
 		self.surname_input = QLineEdit()
 
+		# Input descrizione
+		description_label = QLabel("Descrizione:")
+		self.description_input = QLineEdit()
+
 		# Messaggio errore inserimento
 		self.error_add_label = QLabel("Errore inserimento")
 		self.error_add_label.hide()
@@ -72,6 +76,8 @@ class NewEmployeeWindow(QWidget):
 		layout.addWidget(self.name_input)
 		layout.addWidget(surname_label)
 		layout.addWidget(self.surname_input)
+		layout.addWidget(description_label)
+		layout.addWidget(self.description_input)
 		layout.addWidget(self.error_add_label)
 		layout.addWidget(self.success_add_label)
 		layout.addWidget(add_button)
@@ -90,6 +96,7 @@ class NewEmployeeWindow(QWidget):
 		password = self.password_input.text()
 		name = self.name_input.text()
 		surname = self.surname_input.text()
+		description = self.description_input.text()
 
 		if not email or not password or not name or not surname:
 			self.error_add_label.show()
@@ -98,7 +105,7 @@ class NewEmployeeWindow(QWidget):
 		# Preparo la request
 		headers = {'Authorization': 'Bearer ' + admin.get_token()}
 		url = os.environ.get('URL_INSERT_USER')
-		json = {'email': email, 'password': password, 'name': name, 'surname': surname, 'role': UserState.Employee.value}
+		json = {'email': email, 'password': password, 'name': name, 'surname': surname, 'description': description, 'role': UserState.Employee.value}
 
 		try:
 			response = requests.post(url=url, json=json, headers=headers)
@@ -111,6 +118,7 @@ class NewEmployeeWindow(QWidget):
 				self.password_input.clear()
 				self.name_input.clear()
 				self.surname_input.clear()
+				self.description_input.clear()
 			else:
 				self.error_add_label.show()
 				self.success_add_label.hide()
