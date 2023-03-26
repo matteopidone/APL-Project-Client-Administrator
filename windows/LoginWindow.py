@@ -1,4 +1,4 @@
-from PySide6.QtCore import Qt
+from PySide6.QtCore import Qt, QTimer
 from PySide6.QtWidgets import QWidget, QLabel, QLineEdit, QPushButton, QVBoxLayout
 from PySide6.QtGui import QFont
 import requests
@@ -69,6 +69,10 @@ class LoginWindow(QWidget):
 		self.error_login_label.hide()
 		self.error_server_label.hide()
 
+		# Creo un timer per nascondere il messaggio di errore
+		timer = QTimer(self)
+		timer.setSingleShot(True)
+
 		url_login = os.environ.get('URL_LOGIN')
 		email = self.email_input.text()
 		password = self.password_input.text()
@@ -88,8 +92,12 @@ class LoginWindow(QWidget):
 				self.dispatcher.get_class('HomeWindow').show()
 			else:
 				self.error_login_label.show()
+				timer.timeout.connect(self.error_login_label.hide)
+				timer.start(3000)
 
 		except requests.exceptions.RequestException:
 			# Gestione dell'eccezione
 			print("Impossibile connettersi al server.")
 			self.error_server_label.show()
+			timer.timeout.connect(self.error_server_label.hide)
+			timer.start(3000)
