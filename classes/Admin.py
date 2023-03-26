@@ -3,15 +3,17 @@ class Admin():
 	def __init__(self, dispatcher):
 		# Inizializzo il riferimento al Dispatcher
 		self.dispatcher = dispatcher
+		self.__token = None
+		self.email = None
 		self.employees = list()
 
 	# Funzione per inizializzare il token
 	def set_token(self, token):
-		self.token = token
+		self.__token = token
 
 	# Funzione per il recupero del token
 	def get_token(self):
-		return self.token
+		return self.__token
 
 	# Funzione per inizializzare l'email dell'admin
 	def set_email(self, email):
