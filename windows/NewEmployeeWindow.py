@@ -1,4 +1,4 @@
-from PySide6.QtCore import Qt
+from PySide6.QtCore import Qt, QTimer
 from PySide6.QtWidgets import QWidget, QLabel, QLineEdit, QPushButton, QVBoxLayout
 from PySide6.QtGui import QFont
 import requests
@@ -92,6 +92,10 @@ class NewEmployeeWindow(QWidget):
 		self.error_add_label.hide()
 		self.success_add_label.hide()
 
+		# Creo un timer per nascondere il messaggio di successo/errore
+		timer = QTimer(self)
+		timer.setSingleShot(True)
+
 		admin = self.dispatcher.get_class("Admin")
 
 		# Recupero i valori di input
@@ -103,6 +107,8 @@ class NewEmployeeWindow(QWidget):
 
 		if not email or not password or not name or not surname:
 			self.error_add_label.show()
+			timer.timeout.connect(self.error_add_label.hide)
+			timer.start(3000)
 			return
 
 		# Preparo la request
@@ -116,6 +122,8 @@ class NewEmployeeWindow(QWidget):
 			if response.status_code == 200:
 				self.error_add_label.hide()
 				self.success_add_label.show()
+				timer.timeout.connect(self.success_add_label.hide)
+				timer.start(3000)
 
 				# Svuoto i valori di input
 				self.email_input.clear()
@@ -129,9 +137,13 @@ class NewEmployeeWindow(QWidget):
 			else:
 				self.error_add_label.show()
 				self.success_add_label.hide()
+				timer.timeout.connect(self.error_add_label.hide)
+				timer.start(3000)
 
 		except requests.exceptions.RequestException:
 			# Gestione dell'eccezione
 			print("Impossibile connettersi al server.")
 			self.error_add_label.show()
 			self.success_add_label.hide()
+			timer.timeout.connect(self.error_add_label.hide)
+			timer.start(3000)
