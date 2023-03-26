@@ -4,6 +4,8 @@ from PySide6.QtGui import QFont
 import requests
 import os
 
+from classes.EnumState import UserState
+
 class LoginWindow(QWidget):
 
 	def __init__(self, dispatcher):
@@ -76,8 +78,9 @@ class LoginWindow(QWidget):
 		url_login = os.environ.get('URL_LOGIN')
 		email = self.email_input.text()
 		password = self.password_input.text()
+		role = str(UserState.Admin.value)
 
-		obj = {'email': email, 'password': password}
+		obj = {'email': email, 'password': password, 'role': role}
 
 		try:
 			response = requests.post(url=url_login, json=obj)
